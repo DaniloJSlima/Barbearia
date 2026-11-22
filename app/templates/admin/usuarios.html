@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block titulo %}Usuários{% endblock %}
+{% block conteudo %}
+{% include 'admin/_menu.html' %}
+<div class="titulo-acao">
+  <h1>Usuários</h1>
+  <a class="btn" href="{{ url_for('admin.usuario_form') }}">Novo barbeiro / usuário</a>
+</div>
+
+<form method="get" class="caixa form form-linha">
+  <label>Buscar <input name="q" value="{{ busca }}" placeholder="Nome ou e-mail"></label>
+  <label>Papel
+    <select name="papel">
+      <option value="">Todos</option>
+      <option value="cliente" {% if papel == 'cliente' %}selected{% endif %}>Clientes</option>
+      <option value="barbeiro" {% if papel == 'barbeiro' %}selected{% endif %}>Barbeiros</option>
+      <option value="admin" {% if papel == 'admin' %}selected{% endif %}>Administradores</option>
+    </select>
+  </label>
+  <button class="btn btn-secundario">Filtrar</button>
+</form>
+
+<table class="tabela">
+  <thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Papel</th><th>Situação</th><th></th></tr></thead>
+  <tbody>
+    {% for u in usuarios %}
+      <tr class="{% if not u.ativo %}apagado{% endif %}">
+        <td>{{ u.nome }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.telefone or '—' }}</td>
+        <td><span class="selo">{{ u.papel|capitalize }}</span></td>
+        <td>{{ 'Ativo' if u.ativo else 'Inativo' }}</td>
+        <td><a class="btn btn-pequeno btn-secundario" href="{{ url_for('admin.usuario_form', id=u.id) }}">Editar</a></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6" class="suave">Nenhum usuário encontrado.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

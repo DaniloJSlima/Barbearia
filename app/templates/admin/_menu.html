@@ -1,0 +1,6 @@
+<nav class="abas">
+  <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint == 'admin.dashboard' %}ativa{% endif %}">Painel</a>
+  <a href="{{ url_for('admin.agendamentos') }}" class="{% if request.endpoint == 'admin.agendamentos' %}ativa{% endif %}">Agendamentos</a>
+  <a href="{{ url_for('admin.servicos') }}" class="{% if request.endpoint in ('admin.servicos', 'admin.servico_form') %}ativa{% endif %}">Serviços</a>
+  <a href="{{ url_for('admin.usuarios') }}" class="{% if request.endpoint in ('admin.usuarios', 'admin.usuario_form') %}ativa{% endif %}">Usuários</a>
+</nav>

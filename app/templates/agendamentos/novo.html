@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block titulo %}Agendar{% endblock %}
+{% block conteudo %}
+<h1>Novo agendamento</h1>
+
+{% if not servicos or not barbeiros %}
+  <div class="caixa">
+    <p class="suave">A agenda ainda não está disponível: é preciso ter pelo menos um serviço e um barbeiro cadastrados.</p>
+  </div>
+{% else %}
+<form method="get" class="caixa form form-linha" id="filtro">
+  <label>Serviço
+    <select name="servico_id" required onchange="this.form.submit()">
+      <option value="">Escolha…</option>
+      {% for s in servicos %}
+        <option value="{{ s.id }}" {% if servico and servico.id == s.id %}selected{% endif %}>
+          {{ s.nome }} — {{ s.preco|moeda }} ({{ s.duracao_min }} min)
+        </option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Barbeiro
+    <select name="barbeiro_id" required onchange="this.form.submit()">
+      <option value="">Escolha…</option>
+      {% for b in barbeiros %}
+        <option value="{{ b.id }}" {% if barbeiro and barbeiro.id == b.id %}selected{% endif %}>{{ b.nome }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Data
+    <input type="date" name="data" value="{{ dia.isoformat() }}" min="{{ data_min.isoformat() }}"
+           max="{{ data_max.isoformat() }}" required onchange="this.form.submit()">
+  </label>
+  <button class="btn btn-secundario">Ver horários</button>
+</form>
+
+{% if horarios is not none %}
+  <div class="caixa">
+    <h2>Horários livres — {{ dia|dia_semana }}, {{ dia|data_br }}</h2>
+    {% if horarios %}
+      <form method="post" class="form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="servico_id" value="{{ servico.id }}">
+        <input type="hidden" name="barbeiro_id" value="{{ barbeiro.id }}">
+        <div class="horarios">
+          {% for h in horarios %}
+            <label class="horario">
+              <input type="radio" name="horario" value="{{ h.isoformat() }}" required>
+              <span>{{ h.strftime('%H:%M') }}</span>
+            </label>
+          {% endfor %}
+        </div>
+        <label>Observação (opcional)
+          <input name="observacao" maxlength="255" placeholder="Ex.: degradê baixo, barba só aparar…">
+        </label>
+        <p>
+          <strong>{{ servico.nome }}</strong> com <strong>{{ barbeiro.nome }}</strong> ·
+          {{ servico.preco|moeda }} · {{ servico.duracao_min }} min
+        </p>
+        <button class="btn">Confirmar agendamento</button>
+      </form>
+    {% else %}
+      <p class="suave">Sem horários livres nesse dia. Tente outra data ou outro barbeiro.</p>
+    {% endif %}
+  </div>
+{% endif %}
+{% endif %}
+{% endblock %}

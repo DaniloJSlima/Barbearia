@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block titulo %}Painel{% endblock %}
+{% block conteudo %}
+{% include 'admin/_menu.html' %}
+<h1>Painel — {{ hoje|data_br }}</h1>
+
+<div class="estatisticas">
+  <div class="stat"><span>{{ resumo.hoje_total }}</span>atendimentos hoje</div>
+  <div class="stat"><span>{{ resumo.hoje_pendentes }}</span>pendentes hoje</div>
+  <div class="stat"><span>{{ resumo.faturamento_hoje|moeda }}</span>faturado hoje</div>
+  <div class="stat"><span>{{ resumo.faturamento_mes|moeda }}</span>faturado no mês</div>
+  <div class="stat"><span>{{ resumo.atendimentos_mes }}</span>atendimentos no mês</div>
+  <div class="stat"><span>{{ resumo.faltas_mes }}</span>faltas no mês</div>
+  <div class="stat"><span>{{ resumo.clientes }}</span>clientes cadastrados</div>
+</div>
+
+<div class="duas-colunas">
+  <div class="caixa">
+    <h2>Faturamento por barbeiro (mês)</h2>
+    <table class="tabela">
+      <thead><tr><th>Barbeiro</th><th>Atendimentos</th><th>Total</th></tr></thead>
+      <tbody>
+        {% for nome, qtd, total in por_barbeiro %}
+          <tr><td>{{ nome }}</td><td>{{ qtd }}</td><td>{{ total|moeda }}</td></tr>
+        {% else %}
+          <tr><td colspan="3" class="suave">Sem atendimentos concluídos no mês.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="caixa">
+    <h2>Serviços mais pedidos (mês)</h2>
+    <table class="tabela">
+      <thead><tr><th>Serviço</th><th>Agendamentos</th></tr></thead>
+      <tbody>
+        {% for nome, qtd in por_servico %}
+          <tr><td>{{ nome }}</td><td>{{ qtd }}</td></tr>
+        {% else %}
+          <tr><td colspan="2" class="suave">Sem dados ainda.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="caixa">
+  <h2>Próximos agendamentos</h2>
+  <table class="tabela">
+    <thead><tr><th>Quando</th><th>Cliente</th><th>Serviço</th><th>Barbeiro</th><th></th></tr></thead>
+    <tbody>
+      {% for a in proximos %}
+        <tr>
+          <td>{{ a.inicio|data_br('%d/%m %H:%M') }}</td>
+          <td>{{ a.cliente.nome }}</td>
+          <td>{{ a.servico.nome }}</td>
+          <td>{{ a.barbeiro.nome }}</td>
+          <td class="acoes">{% include 'agendamentos/_acoes_status.html' %}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5" class="suave">Nenhum agendamento futuro.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

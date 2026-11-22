@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block titulo %}Serviços{% endblock %}
+{% block conteudo %}
+{% include 'admin/_menu.html' %}
+<div class="titulo-acao">
+  <h1>Serviços</h1>
+  <a class="btn" href="{{ url_for('admin.servico_form') }}">Novo serviço</a>
+</div>
+
+<table class="tabela">
+  <thead><tr><th>Nome</th><th>Preço</th><th>Duração</th><th>Situação</th><th></th></tr></thead>
+  <tbody>
+    {% for s in servicos %}
+      <tr class="{% if not s.ativo %}apagado{% endif %}">
+        <td><strong>{{ s.nome }}</strong>{% if s.descricao %}<br><span class="suave">{{ s.descricao }}</span>{% endif %}</td>
+        <td>{{ s.preco|moeda }}</td>
+        <td>{{ s.duracao_min }} min</td>
+        <td>{{ 'Ativo' if s.ativo else 'Inativo' }}</td>
+        <td class="acoes">
+          <a class="btn btn-pequeno btn-secundario" href="{{ url_for('admin.servico_form', id=s.id) }}">Editar</a>
+          <form action="{{ url_for('admin.servico_alternar', id=s.id) }}" method="post" class="inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-pequeno {{ 'btn-perigo' if s.ativo else '' }}">{{ 'Desativar' if s.ativo else 'Ativar' }}</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="suave">Nenhum serviço. Rode <code>flask seed</code> para criar exemplos.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

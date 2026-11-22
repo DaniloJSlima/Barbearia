@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block titulo %}Meu perfil{% endblock %}
+{% block conteudo %}
+<div class="caixa caixa-centro">
+  <h1>Meu perfil</h1>
+  <form method="post" class="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Nome <input name="nome" required value="{{ current_user.nome }}"></label>
+    <label>E-mail <input value="{{ current_user.email }}" disabled></label>
+    <label>Telefone <input name="telefone" value="{{ current_user.telefone or '' }}"></label>
+    <fieldset>
+      <legend>Alterar senha (opcional)</legend>
+      <label>Senha atual <input type="password" name="senha_atual"></label>
+      <label>Nova senha <input type="password" name="nova_senha" minlength="6"></label>
+    </fieldset>
+    <button class="btn">Salvar</button>
+  </form>
+</div>
+{% endblock %}

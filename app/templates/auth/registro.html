@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block titulo %}Criar conta{% endblock %}
+{% block conteudo %}
+<div class="caixa caixa-centro">
+  <h1>Criar conta</h1>
+  <form method="post" class="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Nome <input name="nome" required value="{{ dados.nome }}"></label>
+    <label>E-mail <input type="email" name="email" required value="{{ dados.email }}"></label>
+    <label>Telefone / WhatsApp <input name="telefone" value="{{ dados.telefone }}" placeholder="(11) 99999-9999"></label>
+    <label>Senha <input type="password" name="senha" required minlength="6"></label>
+    <label>Confirmar senha <input type="password" name="confirmar_senha" required minlength="6"></label>
+    <button class="btn">Criar conta</button>
+  </form>
+  <p class="suave">Já tem conta? <a href="{{ url_for('auth.login') }}">Entrar</a>.</p>
+</div>
+{% endblock %}

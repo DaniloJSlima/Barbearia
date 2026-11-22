@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block titulo %}Início{% endblock %}
+{% block conteudo %}
+<section class="hero">
+  <h1>Seu estilo, no seu horário.</h1>
+  <p>Escolha o serviço, o barbeiro e o horário — tudo online, em menos de um minuto.</p>
+  <a class="btn" href="{{ url_for('agendamentos.novo') }}">Agendar agora</a>
+</section>
+
+<section>
+  <h2>Serviços</h2>
+  {% if servicos %}
+    <div class="grade">
+      {% for s in servicos %}
+        <div class="card">
+          <h3>{{ s.nome }}</h3>
+          {% if s.descricao %}<p class="suave">{{ s.descricao }}</p>{% endif %}
+          <p><strong>{{ s.preco|moeda }}</strong> · {{ s.duracao_min }} min</p>
+          <a class="btn btn-pequeno" href="{{ url_for('agendamentos.novo', servico_id=s.id) }}">Agendar</a>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="suave">Nenhum serviço cadastrado ainda.</p>
+  {% endif %}
+</section>
+
+{% if barbeiros %}
+<section>
+  <h2>Nossa equipe</h2>
+  <div class="grade">
+    {% for b in barbeiros %}
+      <div class="card card-centro">
+        <div class="avatar">{{ b.nome[0]|upper }}</div>
+        <h3>{{ b.nome }}</h3>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

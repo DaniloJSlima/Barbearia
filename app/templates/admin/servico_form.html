@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ 'Editar' if servico.id else 'Novo' }} serviço{% endblock %}
+{% block conteudo %}
+{% include 'admin/_menu.html' %}
+<div class="caixa caixa-centro">
+  <h1>{{ 'Editar' if servico.id else 'Novo' }} serviço</h1>
+  <form method="post" class="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Nome <input name="nome" required maxlength="80" value="{{ request.form.nome or servico.nome or '' }}"></label>
+    <label>Descrição <input name="descricao" maxlength="255" value="{{ request.form.descricao or servico.descricao or '' }}"></label>
+    <label>Preço (R$) <input name="preco" required inputmode="decimal" placeholder="45,00" value="{{ request.form.preco or servico.preco or '' }}"></label>
+    <label>Duração (minutos) <input type="number" name="duracao_min" required min="1" step="1" value="{{ request.form.duracao_min or servico.duracao_min or '' }}"></label>
+    <label class="check"><input type="checkbox" name="ativo" {% if servico.ativo %}checked{% endif %}> Ativo (aparece para os clientes)</label>
+    <div>
+      <button class="btn">Salvar</button>
+      <a class="btn btn-secundario" href="{{ url_for('admin.servicos') }}">Voltar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

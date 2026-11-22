@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block titulo %}Agendamentos{% endblock %}
+{% block conteudo %}
+{% include 'admin/_menu.html' %}
+<h1>Agendamentos</h1>
+
+<form method="get" class="caixa form form-linha">
+  <label>De <input type="date" name="de" value="{{ de }}"></label>
+  <label>Até <input type="date" name="ate" value="{{ ate }}"></label>
+  <label>Barbeiro
+    <select name="barbeiro_id">
+      <option value="">Todos</option>
+      {% for b in barbeiros %}
+        <option value="{{ b.id }}" {% if barbeiro_id == b.id %}selected{% endif %}>{{ b.nome }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Status
+    <select name="status">
+      <option value="">Todos</option>
+      {% for s in todos_status %}
+        <option value="{{ s }}" {% if status == s %}selected{% endif %}>{{ s|status }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button class="btn btn-secundario">Filtrar</button>
+</form>
+
+<table class="tabela">
+  <thead><tr><th>Quando</th><th>Cliente</th><th>Serviço</th><th>Barbeiro</th><th>Valor</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+    {% for a in agendamentos %}
+      <tr>
+        <td>{{ a.inicio|data_br('%d/%m/%Y %H:%M') }}</td>
+        <td>{{ a.cliente.nome }}{% if a.cliente.telefone %}<br><span class="suave">{{ a.cliente.telefone }}</span>{% endif %}</td>
+        <td>{{ a.servico.nome }}</td>
+        <td>{{ a.barbeiro.nome }}</td>
+        <td>{{ a.preco|moeda }}</td>
+        <td><span class="selo selo-{{ a.status }}">{{ a.status|status }}</span></td>
+        <td class="acoes">{% include 'agendamentos/_acoes_status.html' %}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="7" class="suave">Nenhum agendamento no período.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

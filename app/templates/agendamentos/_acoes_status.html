@@ -1,0 +1,9 @@
+{% if a.status == 'agendado' %}
+  <form action="{{ url_for('agendamentos.alterar_status', id=a.id) }}" method="post" class="inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-pequeno" name="status" value="concluido">Concluir</button>
+    <button class="btn btn-pequeno btn-secundario" name="status" value="faltou">Faltou</button>
+    <button class="btn btn-pequeno btn-perigo" name="status" value="cancelado"
+            onclick="return confirm('Cancelar este agendamento?')">Cancelar</button>
+  </form>
+{% endif %}

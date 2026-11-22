@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block titulo %}Meus horários{% endblock %}
+{% block conteudo %}
+<div class="titulo-acao">
+  <h1>Meus horários</h1>
+  <a class="btn" href="{{ url_for('agendamentos.novo') }}">Novo agendamento</a>
+</div>
+
+<h2>Próximos</h2>
+{% if proximos %}
+  <div class="grade">
+    {% for a in proximos %}
+      <div class="card">
+        <p class="destaque">{{ a.inicio|dia_semana }}, {{ a.inicio|data_br('%d/%m às %H:%M') }}</p>
+        <h3>{{ a.servico.nome }}</h3>
+        <p class="suave">com {{ a.barbeiro.nome }} · {{ a.preco|moeda }}</p>
+        {% if a.observacao %}<p class="suave">“{{ a.observacao }}”</p>{% endif %}
+        {% if a.pode_cancelar %}{% include 'agendamentos/_cancelar.html' %}{% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="suave">Você não tem horários marcados.</p>
+{% endif %}
+
+<h2>Histórico</h2>
+<table class="tabela">
+  <thead><tr><th>Data</th><th>Serviço</th><th>Barbeiro</th><th>Valor</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for a in historico %}
+      <tr>
+        <td>{{ a.inicio|data_br('%d/%m/%Y %H:%M') }}</td>
+        <td>{{ a.servico.nome }}</td>
+        <td>{{ a.barbeiro.nome }}</td>
+        <td>{{ a.preco|moeda }}</td>
+        <td><span class="selo selo-{{ a.status }}">{{ a.status|status }}</span></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="suave">Nada por aqui ainda.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

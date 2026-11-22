@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ 'Editar' if usuario.id else 'Novo' }} usuário{% endblock %}
+{% block conteudo %}
+{% include 'admin/_menu.html' %}
+<div class="caixa caixa-centro">
+  <h1>{{ 'Editar' if usuario.id else 'Novo' }} usuário</h1>
+  <form method="post" class="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Nome <input name="nome" required maxlength="80" value="{{ request.form.nome or usuario.nome or '' }}"></label>
+    <label>E-mail <input type="email" name="email" required value="{{ request.form.email or usuario.email or '' }}"></label>
+    <label>Telefone <input name="telefone" value="{{ request.form.telefone or usuario.telefone or '' }}"></label>
+    <label>Papel
+      <select name="papel">
+        {% for p in papeis %}
+          <option value="{{ p }}" {% if (request.form.papel or usuario.papel) == p %}selected{% endif %}>{{ p|capitalize }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Senha {% if usuario.id %}<span class="suave">(deixe em branco para manter)</span>{% endif %}
+      <input type="password" name="senha" minlength="6" {% if not usuario.id %}required{% endif %}>
+    </label>
+    <label class="check"><input type="checkbox" name="ativo" {% if usuario.ativo %}checked{% endif %}> Ativo (pode fazer login)</label>
+    <div>
+      <button class="btn">Salvar</button>
+      <a class="btn btn-secundario" href="{{ url_for('admin.usuarios') }}">Voltar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
